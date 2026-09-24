@@ -1,36 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <link rel="manifest" href="manifest.json">
-<link rel="icon" href="icon.svg">
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#050509">
+
 <title>Workout Tracker Pro</title>
 
+<!-- PWA -->
+<link rel="manifest" href="./manifest.json">
+<link rel="icon" href="./icon.svg">
+
 <style>
-*{box-sizing:border-box}
+*{
+  box-sizing:border-box;
+}
+
 body{
   margin:0;
   font-family:Arial,sans-serif;
   background:#050509;
   color:#fff;
 }
+
 .app{
   max-width:600px;
   margin:auto;
   padding:18px;
 }
+
 h1{
   text-align:center;
   margin:8px 0 4px;
   font-size:30px;
 }
+
 .sub{
   text-align:center;
   color:#999;
   margin-bottom:22px;
 }
+
 .card{
   background:#101016;
   border:1px solid #292933;
@@ -38,7 +48,11 @@ h1{
   padding:18px;
   margin-bottom:15px;
 }
-h2{margin-top:0}
+
+h2{
+  margin-top:0;
+}
+
 .exercise{
   display:flex;
   align-items:center;
@@ -48,18 +62,16 @@ h2{margin-top:0}
   background:#181820;
   border-radius:12px;
 }
+
 .exercise input{
   width:21px;
   height:21px;
 }
-.exercise span{font-size:16px}
-.timer{
-  font-size:52px;
-  text-align:center;
-  font-weight:bold;
-  letter-spacing:2px;
-  margin:10px 0;
+
+.exercise span{
+  font-size:16px;
 }
+
 button{
   width:100%;
   padding:14px;
@@ -71,19 +83,41 @@ button{
   background:#fff;
   color:#000;
 }
+
 button.secondary{
   background:#22222b;
   color:#fff;
 }
+
 button.danger{
   background:#35151b;
   color:#fff;
 }
+
+button.install{
+  background:#ffffff;
+  color:#000;
+  display:none;
+}
+
 .status{
   text-align:center;
   color:#aaa;
   margin:10px 0;
 }
+
+.timer{
+  font-size:52px;
+  text-align:center;
+  font-weight:bold;
+  letter-spacing:2px;
+  margin:10px 0;
+}
+
+.tracker{
+  display:none;
+}
+
 video{
   width:100%;
   border-radius:16px;
@@ -91,25 +125,26 @@ video{
   display:none;
   transform:scaleX(-1);
 }
-.tracker{
-  display:none;
-}
+
 .stats{
   display:grid;
   grid-template-columns:1fr 1fr;
   gap:10px;
 }
+
 .stat{
   background:#181820;
   border-radius:12px;
   padding:14px;
   text-align:center;
 }
+
 .stat b{
   display:block;
   font-size:25px;
   margin-top:5px;
 }
+
 #cameraStatus{
   color:#7ee787;
 }
@@ -121,9 +156,23 @@ video{
 <div class="app">
 
 <h1>⚡ WORKOUT TRACKER</h1>
-<div class="sub">48 Minute Training System</div>
+
+<div class="sub">
+48 Minute Training System
+</div>
+
+<!-- INSTALL -->
+<div class="card">
+<button class="install" id="installBtn">
+📱 INSTALL WORKOUT APP
+</button>
+</div>
+
+
+<!-- EXERCISES -->
 
 <div class="card">
+
 <h2>🏋️ Select Exercises</h2>
 
 <label class="exercise">
@@ -166,21 +215,34 @@ video{
 <span>Sit Ups</span>
 </label>
 
-<button onclick="startWorkout()">▶ START WORKOUT</button>
-<button class="secondary" onclick="resetSelection()">RESET SELECTION</button>
+<button onclick="startWorkout()">
+▶ START WORKOUT
+</button>
+
+<button class="secondary" onclick="resetSelection()">
+RESET SELECTION
+</button>
+
 </div>
+
+
+<!-- WORKOUT -->
 
 <div class="card tracker" id="tracker">
 
 <h2>🎯 Active Workout</h2>
 
-<div class="timer" id="timer">48:00</div>
+<div class="timer" id="timer">
+48:00
+</div>
 
 <div class="status" id="workoutStatus">
 Workout ready
 </div>
 
+
 <div class="stats">
+
 <div class="stat">
 Selected
 <b id="selectedCount">0</b>
@@ -190,33 +252,55 @@ Selected
 Detected Reps
 <b id="repCount">0</b>
 </div>
+
 </div>
+
 
 <br>
 
+
+<!-- CAMERA -->
+
 <div class="card" style="margin:0">
+
 <h2>📷 Camera Tracking</h2>
 
 <div class="status" id="cameraStatus">
 Camera not started
 </div>
 
-<video id="camera" autoplay playsinline></video>
+<video
+id="camera"
+autoplay
+playsinline>
+</video>
 
-<button class="secondary" onclick="startCamera()">
+<button
+class="secondary"
+onclick="startCamera()">
 📷 START CAMERA
 </button>
 
-<button class="danger" onclick="stopCamera()">
+<button
+class="danger"
+onclick="stopCamera()">
 ■ STOP CAMERA
 </button>
+
 </div>
 
-<button class="secondary" onclick="pauseTimer()" id="pauseBtn">
+
+<button
+class="secondary"
+onclick="pauseTimer()"
+id="pauseBtn">
 Ⅱ PAUSE
 </button>
 
-<button class="danger" onclick="stopWorkout()">
+
+<button
+class="danger"
+onclick="stopWorkout()">
 ■ END WORKOUT
 </button>
 
@@ -224,58 +308,71 @@ Camera not started
 
 </div>
 
+
 <script>
 
-/* =========================
-   SAVED EXERCISES
-========================= */
+/* =================================
+   EXERCISE SAVE
+================================= */
 
 const checks =
 document.querySelectorAll(".exerciseCheck");
+
 
 checks.forEach((box,index)=>{
 
   const saved =
   localStorage.getItem("exercise_"+index);
 
-  box.checked = saved === "true";
+  box.checked =
+  saved === "true";
+
 
   box.addEventListener("change",()=>{
+
     localStorage.setItem(
       "exercise_"+index,
       box.checked
     );
+
   });
 
 });
 
 
-/* =========================
+/* =================================
    TIMER
-========================= */
+================================= */
 
 let totalSeconds = 48 * 60;
+
 let timerInterval = null;
+
 let paused = false;
+
 
 function updateTimer(){
 
-  let min =
+  const min =
   Math.floor(totalSeconds / 60);
 
-  let sec =
+  const sec =
   totalSeconds % 60;
 
-  document.getElementById("timer").textContent =
-    String(min).padStart(2,"0") +
-    ":" +
+  document.getElementById("timer")
+  .textContent =
+    String(min).padStart(2,"0")
+    + ":" +
     String(sec).padStart(2,"0");
 
 }
 
+
 function startTimer(){
 
-  if(timerInterval) return;
+  if(timerInterval)
+    return;
+
 
   timerInterval =
   setInterval(()=>{
@@ -288,9 +385,11 @@ function startTimer(){
 
     }
 
+
     if(totalSeconds <= 0){
 
       clearInterval(timerInterval);
+
       timerInterval = null;
 
       document.getElementById(
@@ -304,6 +403,7 @@ function startTimer(){
 
 }
 
+
 function pauseTimer(){
 
   paused = !paused;
@@ -316,73 +416,105 @@ function pauseTimer(){
 }
 
 
-/* =========================
-   WORKOUT
-========================= */
+/* =================================
+   START WORKOUT
+================================= */
 
 function startWorkout(){
 
   const selected =
-  [...checks].filter(x=>x.checked);
+  [...checks].filter(
+    box => box.checked
+  );
+
 
   if(selected.length === 0){
 
-    alert("Please select at least one exercise.");
+    alert(
+      "Please select at least one exercise."
+    );
 
     return;
+
   }
+
 
   document.getElementById(
     "tracker"
-  ).style.display="block";
+  ).style.display =
+  "block";
+
 
   document.getElementById(
     "selectedCount"
-  ).textContent=selected.length;
+  ).textContent =
+  selected.length;
+
 
   document.getElementById(
     "workoutStatus"
-  ).textContent=
+  ).textContent =
   "Workout started";
 
-  totalSeconds = 48*60;
-  paused=false;
+
+  totalSeconds =
+  48 * 60;
+
+  paused = false;
 
   updateTimer();
+
   startTimer();
 
+
   window.scrollTo({
-    top:document.body.scrollHeight,
+
+    top:
+    document.body.scrollHeight,
+
     behavior:"smooth"
+
   });
 
 }
 
 
+/* =================================
+   STOP WORKOUT
+================================= */
+
 function stopWorkout(){
 
   clearInterval(timerInterval);
-  timerInterval=null;
 
-  totalSeconds=48*60;
-  paused=false;
+  timerInterval = null;
+
+  totalSeconds =
+  48 * 60;
+
+  paused = false;
 
   updateTimer();
 
   document.getElementById(
     "tracker"
-  ).style.display="none";
+  ).style.display =
+  "none";
 
   stopCamera();
 
 }
 
 
+/* =================================
+   RESET
+================================= */
+
 function resetSelection(){
 
   checks.forEach((box,index)=>{
 
-    box.checked=false;
+    box.checked = false;
 
     localStorage.removeItem(
       "exercise_"+index
@@ -393,24 +525,40 @@ function resetSelection(){
 }
 
 
-/* =========================
+/* =================================
    CAMERA
-========================= */
+================================= */
 
-let stream=null;
+let stream = null;
+
 
 async function startCamera(){
 
   const video =
   document.getElementById("camera");
 
+
   const status =
-  document.getElementById("cameraStatus");
+  document.getElementById(
+    "cameraStatus"
+  );
+
+
+  if(!navigator.mediaDevices){
+
+    status.textContent =
+    "❌ Camera not supported";
+
+    return;
+
+  }
+
 
   try{
 
     stream =
-    await navigator.mediaDevices.getUserMedia({
+    await navigator.mediaDevices
+    .getUserMedia({
 
       video:{
         facingMode:"user",
@@ -422,19 +570,28 @@ async function startCamera(){
 
     });
 
-    video.srcObject=stream;
-    video.style.display="block";
 
-    status.textContent=
+    video.srcObject =
+    stream;
+
+    video.style.display =
+    "block";
+
+
+    status.textContent =
     "🟢 Camera active";
 
-  }catch(error){
+  }
 
-    status.textContent=
+
+  catch(error){
+
+    status.textContent =
     "❌ Camera permission required";
 
+
     alert(
-      "Camera permission allow karo."
+      "Camera permission Allow karo."
     );
 
   }
@@ -445,65 +602,157 @@ async function startCamera(){
 function stopCamera(){
 
   const video =
-  document.getElementById("camera");
+  document.getElementById(
+    "camera"
+  );
+
 
   if(stream){
 
-    stream.getTracks().forEach(
-      track=>track.stop()
+    stream
+    .getTracks()
+    .forEach(
+      track => track.stop()
     );
 
-    stream=null;
+    stream = null;
 
   }
 
-  video.srcObject=null;
-  video.style.display="none";
+
+  video.srcObject = null;
+
+  video.style.display =
+  "none";
+
 
   document.getElementById(
     "cameraStatus"
-  ).textContent=
+  ).textContent =
   "Camera stopped";
 
 }
 
 
-/* =========================
-   BASIC MOTION DETECTION
-========================= */
+/* =================================
+   REP COUNTER
+================================= */
 
-/*
-   Camera abhi body movement ko
-   monitor karne ke liye ready hai.
+let reps = 0;
 
-   Actual AI pose detection ke liye
-   pose-estimation model add kiya
-   ja sakta hai.
-*/
-
-let reps=0;
 
 function addRep(){
 
   reps++;
 
+
   document.getElementById(
     "repCount"
-  ).textContent=reps;
+  ).textContent =
+  reps;
 
 }
 
 
-/* =========================
-   KEEP TIMER AFTER RELOAD
-========================= */
+/* =================================
+   SERVICE WORKER
+================================= */
+
+if("serviceWorker" in navigator){
+
+  window.addEventListener(
+    "load",
+    ()=>{
+
+      navigator.serviceWorker
+      .register("./sw.js")
+      .then(()=>{
+
+        console.log(
+          "Service Worker registered"
+        );
+
+      })
+      .catch(error=>{
+
+        console.log(
+          "Service Worker error:",
+          error
+        );
+
+      });
+
+    }
+  );
+
+}
+
+
+/* =================================
+   INSTALL APP
+================================= */
+
+let deferredPrompt = null;
+
+const installBtn =
+document.getElementById(
+  "installBtn"
+);
+
 
 window.addEventListener(
-"beforeunload",()=>{
+"beforeinstallprompt",
+(event)=>{
 
-  localStorage.setItem(
-    "workoutTime",
-    totalSeconds
+  event.preventDefault();
+
+  deferredPrompt =
+  event;
+
+  installBtn.style.display =
+  "block";
+
+});
+
+
+installBtn.addEventListener(
+"click",
+async ()=>{
+
+  if(!deferredPrompt)
+    return;
+
+
+  deferredPrompt.prompt();
+
+
+  const result =
+  await deferredPrompt.userChoice;
+
+
+  console.log(
+    "Install:",
+    result.outcome
+  );
+
+
+  deferredPrompt = null;
+
+  installBtn.style.display =
+  "none";
+
+});
+
+
+window.addEventListener(
+"appinstalled",
+()=>{
+
+  installBtn.style.display =
+  "none";
+
+  console.log(
+    "Workout Tracker installed"
   );
 
 });
